@@ -1,0 +1,48 @@
+name: railway-glpi
+
+services:
+  glpi:
+    build:
+      context: .
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PORT: "80"
+      GLPI_DB_HOST: mysql
+      GLPI_DB_PORT: "3306"
+      GLPI_DB_NAME: "${MYSQL_DATABASE:?Set MYSQL_DATABASE in .env}"
+      GLPI_DB_USER: "${MYSQL_USER:?Set MYSQL_USER in .env}"
+      GLPI_DB_PASSWORD: "${MYSQL_PASSWORD:?Set MYSQL_PASSWORD in .env}"
+      GLPI_ADMIN_PASSWORD: "${GLPI_ADMIN_PASSWORD:?Set GLPI_ADMIN_PASSWORD in .env}"
+      GLPI_HARDEN_DEFAULT_USERS: "true"
+      GLPI_CRONTAB_ENABLED: "1"
+      GLPI_SKIP_AUTOINSTALL: "false"
+      GLPI_SKIP_AUTOUPDATE: "false"
+    ports:
+      - "8080:80"
+    volumes:
+      - glpi-data:/var/glpi
+    stop_grace_period: 30s
+
+  mysql:
+    image: mysql:9.4@sha256:135bc87cce147c3d28cecb9ad270b814cb52805af7ddeea83bfcaf157d05a6b2
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: "${MYSQL_DATABASE:?Set MYSQL_DATABASE in .env}"
+      MYSQL_USER: "${MYSQL_USER:?Set MYSQL_USER in .env}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD:?Set MYSQL_PASSWORD in .env}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping --host=127.0.0.1 --user=root --password=$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+volumes:
+  glpi-data:
+  mysql-data:

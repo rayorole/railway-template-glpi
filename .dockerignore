@@ -1,0 +1,10 @@
+.git
+.github
+.env
+.env.*
+!.env.example
+compose.yaml
+README.md
+MARKETPLACE.md
+TEMPLATE_SETUP.md
+UPSTREAM.md
