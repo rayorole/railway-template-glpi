@@ -1,7 +1,7 @@
 # GLPI 11.0.8 is the current stable security release as of 2026-08-16.
 # The multi-platform digest is intentionally pinned for reproducible deploys.
 # Dependabot is configured to propose upstream image updates.
-FROM glpi/glpi:11.0.8@sha256:ca6b53ef948e940f41e1f4af31c001097897e819b66d146d3e5cac51ac7e9f14
+FROM glpi/glpi:11.0.8@sha256:4b681082a79e65ae9b347da3ecb2a802286cf288e51f2d77d6440d93325a558e
 
 LABEL org.opencontainers.image.title="GLPI on Railway" \
       org.opencontainers.image.description="Railway-ready wrapper for the official GLPI image" \
